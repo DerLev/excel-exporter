@@ -155,6 +155,7 @@ jobs:
             echo "build_arch=false" >> $GITHUB_OUTPUT;
           fi
       - name: Login to GitHub Container Registry
+        if: ${{ env.BUILD_ARGS }} != '--test'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
