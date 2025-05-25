@@ -117,11 +117,12 @@ jobs:
     name: "Build Add-On Container for ${{ matrix.arch }}"
     runs-on: ubuntu-latest
     needs: [server-lint-typecheck, client-lint-typecheck]
-    if: |
-      always() &&
-      (needs.server-lint-typecheck.result == 'success' || needs.server-lint-typecheck.result == 'skipped') &&
-      (needs.client-lint-typecheck.result == 'success' || needs.client-lint-typecheck.result == 'skipped') &&
-      !(needs.server-lint-typecheck.result == 'skipped' && needs.client-lint-typecheck.result == 'skipped')
+    if: always()
+    # if: |
+    #   always() &&
+    #   (needs.server-lint-typecheck.result == 'success' || needs.server-lint-typecheck.result == 'skipped') &&
+    #   (needs.client-lint-typecheck.result == 'success' || needs.client-lint-typecheck.result == 'skipped') &&
+    #   !(needs.server-lint-typecheck.result == 'skipped' && needs.client-lint-typecheck.result == 'skipped')
     strategy:
       matrix:
         arch: ["aarch64", "amd64", "armhf", "armv7"]
