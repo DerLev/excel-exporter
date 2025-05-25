@@ -21,5 +21,6 @@ Export statistics to an Excel file or a CSV
 * [ ] Create a better dev environment
 * [ ] Fix armhf and armv7 compatability
 * [ ] See if i386 can be used with React SWC
+* [ ] Fix support for file downloads in mobile app
 * [ ] Let users decide if panel is accessible to admins or to everyone
 * [ ] Maybe safe exports in persistent data?
