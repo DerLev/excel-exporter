@@ -5,8 +5,9 @@ RUN apk add --no-cache nodejs yarn
 
 WORKDIR /app/client
 
-COPY client/package.json client/yarn.lock* ./
-RUN yarn install --frozen-lockfile
+# COPY client/package.json client/yarn.lock* ./
+COPY client/package.json ./
+RUN yarn install
 
 COPY client/ .
 RUN yarn build
