@@ -12,3 +12,4 @@ arch:
   - amd64
   - armhf
   - armv7
+image: ghcr.io/derlev/excel-exporter-{arch}
