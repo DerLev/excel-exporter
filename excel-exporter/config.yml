@@ -1,0 +1,14 @@
+name: "Excel Exporter"
+description: "Exports statistics to Excel"
+version: "1.0.0"
+slug: "excel_exporter"
+url: "https://github.com/DerLev/excel-exporter"
+init: false
+ingress: true
+homeassistant_api: true
+panel_icon: mdi:table-arrow-right
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7

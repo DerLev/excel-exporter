@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts --fix",
+    "lint:nofix": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.2",
+    "home-assistant-js-websocket": "^9.5.0",
+    "hono": "^4.7.10",
+    "write-excel-file": "^2.3.2",
+    "zod": "^3.25.28",
+    "zod-validation-error": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "prettier": "^3.5.3",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}

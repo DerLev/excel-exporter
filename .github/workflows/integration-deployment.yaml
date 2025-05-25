@@ -1,0 +1,167 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Path Filtering
+  filter-paths:
+    name: Filter Paths
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      client: ${{ steps.filter.outputs.client }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Filter Paths
+        id: filter
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            server:
+              - 'excel-exporter/server/**'
+              - '!(excel-exporter/server)/**/*.md'
+            client:
+              - 'excel-exporter/client/**'
+              - '!(excel-exporter/client)/**/*.md'
+  
+  # server lint & type check
+  server-lint-typecheck:
+    name: "Server: Lint & Type Check"
+    runs-on: ubuntu-latest
+    needs: filter-paths
+    if: needs.filter-paths.outputs.server == 'true'
+    permissions:
+      checks: write
+      pull-requests: read
+      contents: read
+    defaults:
+      run:
+        working-directory: excel-exporter/server
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: excel-exporter/server/yarn.lock
+      - name: Install Dependencies
+        run: yarn --frozen-lockfile
+      - name: Lint
+        run: yarn lint:nofix --output-file eslint_report.json --format json
+        continue-on-error: true
+      - name: Type Check
+        run: yarn tsc --noEmit > typescript.log
+        continue-on-error: true
+      - name: Annotate Code
+        uses: DerLev/eslint-annotations@v2
+        with:
+          eslint-report: excel-exporter/server/eslint_report.json
+          typescript-log: excel-exporter/server/typescript.log
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          error-on-warn: true
+          status-check-name: 'Server: Annotations'
+          fail-in-pr: false
+          add-notice-with-url: false
+  
+  # client lint & type check
+  client-lint-typecheck:
+    name: "Client: Lint & Type Check"
+    runs-on: ubuntu-latest
+    needs: filter-paths
+    if: needs.filter-paths.outputs.client == 'true'
+    permissions:
+      checks: write
+      pull-requests: read
+      contents: read
+    defaults:
+      run:
+        working-directory: excel-exporter/client
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: excel-exporter/client/yarn.lock
+      - name: Install Dependencies
+        run: yarn --frozen-lockfile
+      - name: Lint
+        run: yarn lint:nofix --output-file eslint_report.json --format json
+        continue-on-error: true
+      - name: Type Check
+        run: yarn tsc --noEmit > typescript.log
+        continue-on-error: true
+      - name: Annotate Code
+        uses: DerLev/eslint-annotations@v2
+        with:
+          eslint-report: excel-exporter/client/eslint_report.json
+          typescript-log: excel-exporter/client/typescript.log
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          error-on-warn: true
+          status-check-name: 'Client: Annotations'
+          fail-in-pr: false
+          add-notice-with-url: false
+
+  # build addon container
+  build-container:
+    name: "Build Add-On Container for ${{ matrix.arch }}"
+    runs-on: ubuntu-latest
+    needs: [server-lint-typecheck, client-lint-typecheck]
+    if: |
+      always() &&
+      (needs.server-lint-typecheck.result == 'success' || needs.server-lint-typecheck.result == 'skipped') &&
+      (needs.client-lint-typecheck.result == 'success' || needs.client-lint-typecheck.result == 'skipped') &&
+      !(needs.server-lint-typecheck.result == 'skipped' && needs.client-lint-typecheck.result == 'skipped')
+    strategy:
+      matrix:
+        arch: ["aarch64", "amd64", "armhf", "armv7"]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Get Information
+        id: info
+        uses: home-assistant/actions/helpers/info@master
+        with:
+          path: "./excel-exporter"
+      - name: Check if Add-On should be built
+        id: check
+        run: |
+          if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
+            echo "Image property is not defined, skipping build"
+            echo "build_arch=false" >> $GITHUB_OUTPUT;
+          elif [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
+            echo "build_arch=true" >> $GITHUB_OUTPUT;
+            echo "image=$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)" >> $GITHUB_OUTPUT;
+          else
+            echo "${{ matrix.arch }} is not a valid arch for excel-exporter, skipping build";
+            echo "build_arch=false" >> $GITHUB_OUTPUT;
+          fi
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build ${{ matrix.arch }} Container
+        if: steps.check.outputs.build_arch == 'true'
+        uses: home-assistant/builder@2025.03.0
+        with:
+          args: |
+            --${{ matrix.arch }} \
+            --target /data/excel-exporter \
+            --image "${{ steps.check.outputs.image }}"
+            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
+            --addon
