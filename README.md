@@ -12,7 +12,7 @@ Inside here is the Excel Exporter Home Assistant Add-On
 ![amd64 support](https://img.shields.io/badge/amd64-yes-green)
 ![armhf support](https://img.shields.io/badge/armhf-no-red)
 ![armv7 support](https://img.shields.io/badge/armv7-no-red)
-![i386 support](https://img.shields.io/badge/i386-yes-green)
+![i386 support](https://img.shields.io/badge/i386-no-red)
 
 Export statistics to an Excel file or a CSV
 
@@ -20,5 +20,6 @@ Export statistics to an Excel file or a CSV
 
 * [ ] Create a better dev environment
 * [ ] Fix armhf and armv7 compatability
+* [ ] See if i386 can be used with React SWC
 * [ ] Let users decide if panel is accessible to admins or to everyone
 * [ ] Maybe safe exports in persistent data?
