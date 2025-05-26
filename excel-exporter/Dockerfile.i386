@@ -1,0 +1,23 @@
+ARG BUILD_FROM
+FROM $BUILD_FROM
+
+RUN apk add --no-cache nodejs yarn
+
+WORKDIR /app
+
+COPY server/package.json server/yarn.lock* ./
+RUN yarn install --frozen-lockfile
+
+COPY server/ .
+RUN yarn build
+
+# This is very much bad practise but the client won't build on 32 bit
+# so we are just building it on the CI/CD runner (64 bit) and copying the files
+COPY client/dist ./public
+
+RUN rm -rf src/
+
+RUN sed -i 's|="/assets/|="assets/|g' public/index.html
+RUN sed -i 's|="/assets/|="assets/|g' public/assets/index-*
+
+CMD ["/usr/bin/with-contenv", "node", "dist/index.js"]
