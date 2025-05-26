@@ -14,7 +14,7 @@ Inside here is the Excel Exporter Home Assistant Add-On
 ![amd64 support](https://img.shields.io/badge/amd64-yes-green)
 ![armhf support](https://img.shields.io/badge/armhf-yes-green)
 ![armv7 support](https://img.shields.io/badge/armv7-yes-green)
-![i386 support](https://img.shields.io/badge/i386-no-red)
+![i386 support](https://img.shields.io/badge/i386-yes-green)
 
 Export statistics to an Excel file or a CSV
 
@@ -22,7 +22,7 @@ Export statistics to an Excel file or a CSV
 
 * [ ] Create a better dev environment
 * [x] Fix armhf and armv7 compatability
-* [ ] See if i386 can be used with Vite & Rollup
-* [ ] Fix support for file downloads in mobile app
+* [x] ~~See if i386 can be used with Vite & Rollup~~ Building the client on the GH Actions runner
+* [ ] Fix support for file downloads on mobile app
 * [ ] Let users decide if panel is accessible to admins or to everyone
-* [ ] Maybe safe exports in persistent data?
+* [ ] Maybe save exports in persistent data?

@@ -3,14 +3,6 @@ FROM $BUILD_FROM
 
 RUN apk add --no-cache nodejs yarn
 
-WORKDIR /app/client
-
-COPY client/package.json client/yarn.lock* ./
-RUN yarn install --frozen-lockfile
-
-COPY client/ .
-RUN yarn build
-
 WORKDIR /app
 
 COPY server/package.json server/yarn.lock* ./
@@ -19,8 +11,9 @@ RUN yarn install --frozen-lockfile
 COPY server/ .
 RUN yarn build
 
-RUN mv -f client/dist public
-RUN rm -rf client/
+# This is very much bad practise but the client won't build on 32 bit
+# so we are just building it on the CI/CD runner (64 bit) and copying the files
+COPY client/dist ./public
 
 RUN rm -rf src/
 

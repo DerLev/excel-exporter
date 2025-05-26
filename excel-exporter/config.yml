@@ -1,6 +1,6 @@
 name: "Excel Exporter"
 description: "Exports statistics to Excel"
-version: "1.0.1"
+version: "1.0.2"
 slug: "excel_exporter"
 url: "https://github.com/DerLev/excel-exporter"
 init: false
@@ -12,4 +12,5 @@ arch:
   - amd64
   - armhf
   - armv7
+  - i386
 image: ghcr.io/derlev/excel-exporter-{arch}
