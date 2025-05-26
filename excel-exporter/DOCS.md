@@ -9,7 +9,7 @@ This add-on needs no configuration all you have to do is start it and access the
 To download statistics fill the fields in the web ui and click "Download as .xlsx".
 This will download your selected stats from the selected timeframe from the recorder.
 
-![Screenshot of the Web UI](./screenshot.png)
+![Screenshot of the Web UI](https://raw.githubusercontent.com/DerLev/excel-exporter/refs/heads/main/excel-exporter/screenshot.png)
 
 If an entity does not have its state class set to "measurement", "total", or "total_increasing",
 its states will only be saved up to 10 days, after which they will be deleted from the short-term

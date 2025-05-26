@@ -160,6 +160,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # NOTE: the next steps are very much bad practise but there is no way the client will build on i386
       - name: Setup Nodejs Environment (i386 only)
         if: matrix.arch == 'i386'
         uses: actions/setup-node@v4

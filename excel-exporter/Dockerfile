@@ -24,7 +24,4 @@ RUN rm -rf client/
 
 RUN rm -rf src/
 
-RUN sed -i 's|="/assets/|="assets/|g' public/index.html
-RUN sed -i 's|="/assets/|="assets/|g' public/assets/index-*
-
 CMD ["/usr/bin/with-contenv", "node", "dist/index.js"]
