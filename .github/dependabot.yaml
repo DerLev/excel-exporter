@@ -4,9 +4,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    target-branch: develop
   - package-ecosystem: npm
     directories:
       - excel-exporter/client
       - excel-exporter/server
     schedule:
       interval: monthly
+    target-branch: develop
