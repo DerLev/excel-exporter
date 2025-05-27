@@ -195,7 +195,7 @@ const App = () => {
             value={format}
             onChange={(value) => setFormat(value as "xlsx" | "csv")}
           >
-            <Group>
+            <Group mt={4}>
               <Radio value="xlsx" label="Excel" />
               <Radio value="csv" label="CSV" />
             </Group>
