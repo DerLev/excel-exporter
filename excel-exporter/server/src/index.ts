@@ -15,10 +15,22 @@ import { z } from "zod"
 import { fromError } from "zod-validation-error"
 import writeXlsxFile, { type Schema, type ValueType } from "write-excel-file"
 import { stream } from "hono/streaming"
+import { cors } from "hono/cors"
 
 if (!process.env.SUPERVISOR_TOKEN?.length) {
   console.error("No SUPERVISOR_TOKEN provided! Exiting...")
   process.exit(1)
+}
+
+if (!process.env.NODE_ENV?.length) {
+  process.env.NODE_ENV = "development"
+}
+
+if (process.env.NODE_ENV === "development") {
+  if (!process.env.HA_URL?.length) {
+    console.error("No HA_URL provided! Exiting...")
+    process.exit(1)
+  }
 }
 
 let connection: Connection
@@ -26,6 +38,10 @@ let connection: Connection
 const app = new Hono()
 
 app.use("*", serveStatic({ root: "public" }))
+
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api/*", cors())
+}
 
 app.get("/api/entities", async (c) => {
   const states = await getStates(connection)
@@ -184,8 +200,13 @@ const server = serve(
     console.log("Initiating connection to HA WS API")
 
     try {
+      const url =
+        process.env.NODE_ENV === "production"
+          ? "http://supervisor/core/websocket"
+          : process.env.HA_URL + "/api/websocket"
+
       const auth = new AddonAuth({
-        hassUrl: "http://supervisor/core/websocket",
+        hassUrl: url,
         clientId: null,
         expires: Date.now() + 1e11,
         refresh_token: "",

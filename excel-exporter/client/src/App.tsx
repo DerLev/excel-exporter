@@ -11,6 +11,7 @@ import {
 } from "@mantine/core"
 import { DateTimePicker } from "@mantine/dates"
 import { useCallback, useState, useEffect } from "react"
+import apiBaseUrl from "./apiBaseUrl"
 
 const periods = [
   { value: "5minute", label: "5 Minutes" },
@@ -93,7 +94,7 @@ const App = () => {
       }
 
       try {
-        await fetch("api/export", {
+        await fetch(apiBaseUrl + "/export", {
           method: "POST",
           body: JSON.stringify({
             entities: selectedEntities,
@@ -127,7 +128,9 @@ const App = () => {
 
   const fetchAvailableEntities = useCallback(async () => {
     try {
-      const res = await fetch("api/entities").then((res) => res.json())
+      const res = await fetch(apiBaseUrl + "/entities").then((res) =>
+        res.json(),
+      )
       setAvailableEntities(res)
     } catch (err) {
       console.error(err)

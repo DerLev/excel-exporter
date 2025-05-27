@@ -24,4 +24,6 @@ RUN rm -rf client/
 
 RUN rm -rf src/
 
+ENV NODE_ENV=production
+
 CMD ["/usr/bin/with-contenv", "node", "dist/index.js"]
