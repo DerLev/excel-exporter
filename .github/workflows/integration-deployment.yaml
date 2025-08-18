@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Filter Paths
         id: filter
         uses: dorny/paths-filter@v3.0.2
@@ -50,7 +50,7 @@ jobs:
         working-directory: excel-exporter/server
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Nodejs Environment
         uses: actions/setup-node@v4
         with:
@@ -91,7 +91,7 @@ jobs:
         working-directory: excel-exporter/client
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Nodejs Environment
         uses: actions/setup-node@v4
         with:
@@ -131,7 +131,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Get Information
         id: info
         uses: home-assistant/actions/helpers/info@master
